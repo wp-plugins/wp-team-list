@@ -1,0 +1,21 @@
+{
+  "name": "rplus-wp-team-list",
+  "version": "1.0.0",
+  "description": "Create a simple team site using your WordPress users. The plugin provides you with a shortcode, template tag and a widget.",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:wearerequired/rplus-wp-team-list.git"
+  },
+  "devDependencies": {
+    "grunt": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-wp-i18n": "*",
+    "grunt-wp-readme-to-markdown": "*",
+    "load-grunt-config": "*",
+    "time-grunt": "*"
+  },
+  "dependencies": {
+    "time-grunt": "*"
+  }
+}
