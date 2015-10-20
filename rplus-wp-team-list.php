@@ -12,7 +12,7 @@
  * Plugin Name: WP Team List
  * Plugin URI:  https://github.com/wearerequired/rplus-wp-team-list
  * Description: Display your teammates anywhere on your WordPress site using this easy-to-use plugin. Provides you with a widget, a shortcode <code>[rplus_team_list]</code> and a template function <code>rplus_wp_team_list( $args, $echo = true );</code> to list the blog authors.
- * Version:     1.0.4
+ * Version:     1.1.0
  * Author:      required+
  * Author URI:  http://required.ch
  * Text Domain: wp-team-list
@@ -41,19 +41,21 @@ add_action( 'plugins_loaded', array( 'WP_Team_List', 'get_instance' ) );
  * @return void|string
  */
 function rplus_wp_team_list( $args = array(), $echo = true, $template = 'rplus-wp-team-list.php' ) {
-	/** @var WP_Team_List $wp_team_list */
+	/* @var WP_Team_List $wp_team_list */
 	$wp_team_list = WP_Team_List::get_instance();
 
 	return $wp_team_list->render_team_list( $args, $echo, $template );
 }
 
 /**
+ * Display classes for use in an item's HTML class attribute.
+ *
  * @param string|array $classes List of class names.
  */
 function rplus_wp_team_list_classes( $classes ) {
-	/** @var WP_Team_List $wp_team_list */
+	/* @var WP_Team_List $wp_team_list */
 	$wp_team_list = WP_Team_List::get_instance();
-	echo $wp_team_list->item_classes( $classes );
+	echo esc_attr( $wp_team_list->item_classes( $classes ) );
 }
 
 /**
@@ -68,12 +70,14 @@ function rplus_wp_team_list_shortcode( $atts, $content = '' ) {
 	global $post;
 
 	$atts = shortcode_atts( array(
-		'role'    => 'Administrator',
-		'orderby' => 'post_count',
-		'order'   => 'DESC',
-	), $atts, 'note' );
+		'role'                => 'Administrator',
+		'orderby'             => 'post_count',
+		'order'               => 'DESC',
+		'include'             => '',
+		'has_published_posts' => null,
+	), $atts, 'rplus_team_list' );
 
-	/** @var WP_Team_List $wp_team_list */
+	/* @var WP_Team_List $wp_team_list */
 	$wp_team_list = WP_Team_List::get_instance();
 
 	wp_enqueue_style( 'rplus-wp-team-list-plugin-styles' );
@@ -92,7 +96,7 @@ function wplus_wp_team_list_shortcode_ui() {
 		return;
 	}
 
-	// Include this in order to use get_editable_roles()
+	// Include this in order to use get_editable_roles().
 	require_once( ABSPATH . 'wp-admin/includes/user.php' );
 
 	$user_roles = array( 'all' => __( 'All', 'wp-team-list' ) );
@@ -120,7 +124,7 @@ function wplus_wp_team_list_shortcode_ui() {
 					'options' => $user_roles,
 				),
 				array(
-					'label'   => __( 'Order By' ),
+					'label'   => __( 'Order By', 'wp-team-list' ),
 					'attr'    => 'orderby',
 					'type'    => 'select',
 					'value'   => 'post_count',
