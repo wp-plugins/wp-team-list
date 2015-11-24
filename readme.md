@@ -2,9 +2,9 @@
 * Contributors: wearerequired, swissspidy, neverything, hubersen
 * Donate link: http://required.ch/
 * Tags: authors, widget, users, list, team, shortcode
-* Requires at least: 3.5.1
+* Requires at least: 4.2.0
 * Tested up to: 4.4
-* Stable tag: 1.1.2
+* Stable tag: 2.0.0
 * License: GPLv2 or later
 * License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,27 +20,40 @@ First of all, the plugin adds a small checkbox to the user profile in WordPress 
 
 You can then use one of these ways to display the list anywhere on your site.
 
-**Template Tag**
+**Action**
 
-Use the `rplus_wp_team_list($args = array(), $echo = true)` function to directly display the users in your theme. If you use `echo = false`, the output is only returned, not echoed.
+Use the `wp_team_list` hook to directly display the users in your theme or plugin.
 
 For example, you can show users of any role ordered by their name:
 
-`<?php rplus_wp_team_list( array( 'role' => 'all', 'orderby' => 'name' ) ); ?>`
+```
+<?php
+echo do_action( 'wp_team_list', array( 'role' => 'all', 'orderby' => 'name' ) );
+?>
+```
 
 **Note:** WP Team List supports many of the arguments [`WP_User_Query`](http://codex.wordpress.org/Class_Reference/WP_User_Query "WordPress Codex Codex WP_User_Query") supports.  
 
 **Shortcode**
 
-The `[rplus_team_list]` shortcode accepts the same arguments as the template tag. Example:
+Use the `[wp_team_list]` shortcode to display a team list in your posts. Supported arguments:
 
-`[rplus_team_list role="author" orderby="last_name" order="desc"]`
+* `role` - Filter users by roles (comma-separated).  
+ Use `all` to show users with any role.  
+ **Default:** `administrator`
+* `orderby`  
+ **Default:** `post_count`
+* `order` - Either `asc` or `desc`.  
+ **Default:** `desc`.
+* `include` - Filter users with specific IDs (comma-separated).
+* `has_published_posts` - Filter users with published posts.  
+ Either a comma-separated list of post types or `true` to filter by all post types.
 
-This returns all authors ordered by the number of posts they've written (descending).
+Example:
 
-The `role` parameter defaults to `administrator`. Use `all` to list all users regardless of their role. Also, the users are ordered by `post_count` in descending order by default.
+`[wp_team_list role="author" orderby="last_name" order="desc"]`
 
-**Pro tip:** If you use the [Shortcake WordPress plugin](https://github.com/fusioneng/Shortcake "GitHub - Shortcake"), you'll get an inline preview of the shortcode right in the visual editor. You can also add the shortcode with the click of a button.  
+**Pro tip:** If you use the [Shortcake WordPress plugin](https://github.com/fusioneng/Shortcake "GitHub - Shortcake"), you'll get an inline preview of the shortcode right in the visual editor. You can also add the shortcode with the click of a button.
 
 **Widget**
 
@@ -48,10 +61,10 @@ Want do display the team members in your sidebar? Use the built-in WordPress wid
 
 ## Installation ##
 
-1. Upload `wp-team-list` to the `/wp-content/plugins/` directory
-2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Use one of the supported methods (template tag, shortcode, or widget)
-4. **Optional:** Set the visibility status of your users  
+1. Upload `wp-team-list` to the `/wp-content/plugins/` directory.
+2. Activate the plugin through the 'Plugins' menu in WordPress.
+3. Use one of the supported methods (hook, shortcode, or widget) to display a team list.
+4. **Optional:** Set the visibility status of your users in their profiles.  
 
 ## Frequently Asked Questions ##
 
@@ -59,13 +72,26 @@ Want do display the team members in your sidebar? Use the built-in WordPress wid
 
 Easy! You can report bugs, with reproduction steps, or post patches on [GitHub](https://github.com/wearerequired/rplus-wp-team-list).
 
+### What kind of filters / hooks are available? ###
+* `wp_team_list_user_role` - Filter the user role displayed in the team list.
+* `wp_team_list_query_args` - Filter the `WP_User_Query` arguments.
+* `wp_team_list_template` - Change the team list template.
+ Note: You can also put a `rplus-wp-team-list.php` file in your theme folder.
+* `wp_team_list_avatar_size` - Filter the default avatar size.
+
 ## Screenshots ##
 
 1. This is how your team list can look like with some additional CSS.
-2. The plugin only provides limited styling. It's up for you to adjust it.
+2. The plugin only provides limited styling. It's up to you to adjust it.
 3. The configuration options of the built-in widget.
 
 ## Changelog ##
+
+### 2.0.0 ###
+* Fix: Smaller corrections in the widget.
+* Enhancement: Improved documentation.
+* Enhancement: Simplified template loading.
+* Enhancement: Filterable user roles, making it easier to disable output.
 
 ### 1.1.2 ###
 * Fix: A small error in the previous release.
@@ -102,6 +128,9 @@ Easy! You can report bugs, with reproduction steps, or post patches on [GitHub](
 * Initial Release
 
 ## Upgrade Notice ##
+
+### 2.0.0 ###
+Major rewrite with some deprecated stuff. Make sure to test first!
 
 ### 1.1.2 ###
 Fixes a small bug in the previous release.
